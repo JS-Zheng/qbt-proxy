@@ -12,8 +12,8 @@ import (
 
 // Configuration Options
 type Config struct {
-    // Debug Mode
-	Debug bool `mapstructure:"debug"`
+	// The base URL of the qBittorrent instance.
+	BaseURL string `mapstructure:"base_url"`
 
 	// The HTTP port number to use for the server.
 	HTTPPort int `mapstructure:"http_port"`
@@ -27,8 +27,15 @@ type Config struct {
 	// The path to the TLS private key file. Optional.
 	TLSKey string `mapstructure:"tls_key"`
 
-	// The base URL of the qBittorrent instance.
-	BaseURL string `mapstructure:"base_url"`
+	// CORS settings
+	CORSAllowOrigins     []string `mapstructure:"cors_allow_origins"`
+	CORSAllowMethods     []string `mapstructure:"cors_allow_methods"`
+	CORSAllowHeaders     []string `mapstructure:"cors_allow_headers"`
+	CORSExposeHeaders    []string `mapstructure:"cors_expose_headers"`
+	CORSAllowCredentials bool     `mapstructure:"cors_allow_credentials"`
+
+	// Debug Mode
+	Debug bool `mapstructure:"debug"`
 }
 
 // Loads the configuration from various sources and unmarshals it into the Config struct.
@@ -53,7 +60,7 @@ func (cfg *Config) Load() error {
 		return err
 	}
 
-	log.Println("Config Loaded")
+    log.Println("Config Loaded:")
 	log.Printf("%+v\n", cfg)
 
 	return nil
@@ -96,12 +103,17 @@ func enableEnvCfg() {
 }
 
 func setDefaultValues() {
-	viper.SetDefault("debug", false)
+	viper.SetDefault("base_url", "")
 	viper.SetDefault("http_port", 9487)
 	viper.SetDefault("https_port", 0) // Set to 0 to disable HTTPS by default
 	viper.SetDefault("tls_cert", "")
 	viper.SetDefault("tls_key", "")
-	viper.SetDefault("base_url", "")
+	viper.SetDefault("cors_allow_origins", []string{})
+	viper.SetDefault("cors_allow_methods", []string{})
+	viper.SetDefault("cors_allow_headers", []string{})
+	viper.SetDefault("cors_expose_headers", []string{})
+	viper.SetDefault("cors_allow_credentials", false)
+	viper.SetDefault("debug", false)
 }
 
 func getXdgCfgPath() string {

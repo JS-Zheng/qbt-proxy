@@ -25,8 +25,8 @@ func (server *Server) Run(cfg Config) {
 	// logger and recovery (crash-free) middleware
 	router := gin.Default()
 
-	// Add CORS middleware to allow requests from any origin
-	router.Use(cors.Default())
+	// Add CORS middleware to allow CORS requests
+	router.Use(createCorsMw(cfg))
 	server.router = router
 
 	// Set up the API proxy routes.
@@ -37,6 +37,39 @@ func (server *Server) Run(cfg Config) {
 	} else {
 		startHTTPServer(router, cfg)
 	}
+}
+
+func createCorsMw(cfg Config) gin.HandlerFunc {
+	corsCfg := cors.DefaultConfig()
+
+	if len(cfg.CORSAllowOrigins) > 0 {
+		if contains(cfg.CORSAllowOrigins, "*") {
+			corsCfg.AllowAllOrigins = true
+		} else {
+			corsCfg.AllowOrigins = cfg.CORSAllowOrigins
+		}
+	} else {
+        corsCfg.AllowAllOrigins = true
+    }
+
+	if len(cfg.CORSAllowMethods) > 0 {
+		corsCfg.AllowMethods = cfg.CORSAllowMethods
+	}
+
+	if len(cfg.CORSAllowHeaders) > 0 {
+		corsCfg.AllowHeaders = cfg.CORSAllowHeaders
+	}
+
+	if len(cfg.CORSExposeHeaders) > 0 {
+		corsCfg.ExposeHeaders = cfg.CORSExposeHeaders
+	}
+
+	corsCfg.AllowCredentials = cfg.CORSAllowCredentials
+
+    log.Println("CORS Config:")
+	log.Printf("%+v\n", corsCfg)
+
+	return cors.New(corsCfg)
 }
 
 // Configures the proxy routes for the given router and configuration.
@@ -80,4 +113,13 @@ func HandleError(c *gin.Context, code int, msg string, err error) {
 	c.JSON(code, ErrorResponse{
 		Error: msg,
 	})
+}
+
+func contains(slice []string, target string) bool {
+	for _, item := range slice {
+		if item == target {
+			return true
+		}
+	}
+	return false
 }
