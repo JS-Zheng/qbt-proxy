@@ -39,6 +39,9 @@ func createReverseProxy(config Config) *httputil.ReverseProxy {
 		req.URL.Host = targetURL.Host
 		// Set the request's Host header to match the target server
 		req.Host = targetURL.Host
+        // qBittorrent cannot handle them well
+		req.Header.Del("Origin")
+		req.Header.Del("Referer")
 	}
 	return proxy
 }
