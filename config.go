@@ -99,8 +99,8 @@ func setDefaultValues() {
 	viper.SetDefault("debug", false)
 	viper.SetDefault("http_port", 9487)
 	viper.SetDefault("https_port", 0) // Set to 0 to disable HTTPS by default
-	viper.SetDefault("cert", "")
-	viper.SetDefault("key", "")
+	viper.SetDefault("tls_cert", "")
+	viper.SetDefault("tls_key", "")
 	viper.SetDefault("base_url", "")
 }
 
