@@ -1,5 +1,7 @@
 # qbt-proxy
 
+> **Archived:** This project is no longer maintained.
+
 qbt-proxy is a lightweight proxy server for qBittorrent that simplifies the process of connecting your web applications to your qBittorrent Web API. It is designed to handle cross-origin requests more easily by returning the SID (session ID) as JSON in the response body during login, instead of using the `Set-cookie` HTTP header. qbt-proxy also supports accessing other APIs by including the SID as a query parameter in the request.
 
 By using qbt-proxy, you can add an extra layer of authentication, provide a unified access point for multiple qBittorrent instances, and benefit from support for both HTTP and HTTPS with optional TLS configuration.
@@ -81,4 +83,3 @@ docker run -d -p 9487:9487 -v /path/to/config.yml:/app/config.yml qbt-proxy
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
-
